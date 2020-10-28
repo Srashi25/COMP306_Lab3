@@ -10,9 +10,12 @@ namespace Group4_Lab3.Models
     {
         public string MovieId { get; set; }
         public string Genre { get; set; }
-        public DateTime Date { get; set; }
-        public List<Review> Reviews { get; set; }
-        public string Rating { get; set; }
+        public string MovieName { get; set; }
+        public string Description { get; set; }
+        public DateTime ReleaseDate { get; set; }
+        public ICollection<Review> Reviews { get; set; }
+        public double Rating { get; set; }
+        public string ImageUrl { get; set; }
 
     }
 }
