@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Group4_Lab3.Controllers
+namespace Charles_Sadia_Lab3.Controllers
 {
     public class HomeController : Controller
     {
-        public ViewResult Index() => View();
+        public IActionResult Index() => View();
+
+        public IActionResult Upload() => View();
     }
 }

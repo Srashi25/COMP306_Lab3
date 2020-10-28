@@ -39,20 +39,12 @@ namespace Charles_Sadia_Lab3
             app.UseAuthentication();
             app.UseRouting();
 
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //     name: "",
-            //     template: "{controller=Home}/{action=Index}/{id?}");
-            //});
-
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapGet("/", async context =>
-            //    {
-            //        await context.Response.WriteAsync("Hello World!");
-            //    });
-            //});
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
