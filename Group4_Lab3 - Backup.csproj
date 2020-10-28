@@ -5,18 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="wwwroot\lib\bootstrap\**" />
-    <Content Remove="wwwroot\lib\bootstrap\**" />
-    <EmbeddedResource Remove="wwwroot\lib\bootstrap\**" />
-    <None Remove="wwwroot\lib\bootstrap\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Infrastructure\" />
+    <Folder Include="Migrations\" />
     <Folder Include="Views\Account\" />
     <Folder Include="Views\Movie\" />
     <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\lib\bootstrap\" />
   </ItemGroup>
 
   <ItemGroup>
