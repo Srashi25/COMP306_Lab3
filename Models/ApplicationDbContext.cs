@@ -13,6 +13,7 @@ namespace Group4_Lab3.Models
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<Review> Reviews { get; set; }
     }
     //public class ApplicationDbContextFactory
     //        : IDesignTimeDbContextFactory<ApplicationDbContext>
