@@ -15,6 +15,9 @@ namespace Group4_Lab3.Models
         [Required(ErrorMessage = "Please enter Review!")]
         public string ReviewDescription { get; set; }
         public Movie Movie { get; set; }
-        
+        public uint Rating { get; set; }
+
+      
+
     }
 }

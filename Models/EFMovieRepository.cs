@@ -32,7 +32,6 @@ namespace Group4_Lab3.Models
                     dbEntry.UserEmail= movie.UserEmail;
                     dbEntry.ImageUrl = movie.ImageUrl;
                     dbEntry.Genre = movie.Genre;
-                    dbEntry.Rating = movie.Rating;
                     dbEntry.ReleaseDate = movie.ReleaseDate;
                     dbEntry.MovieId = movie.MovieId;
                     dbEntry.Description = movie.Description;

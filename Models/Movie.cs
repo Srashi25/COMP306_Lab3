@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,26 @@ namespace Group4_Lab3.Models
         public string Description { get; set; }
         public DateTime ReleaseDate { get; set; }
         public ICollection<Review> Reviews { get; set; }
-        public double Rating { get; set; }
+     
         public string ImageUrl { get; set; }
+        public string Substring(string instructions)
+        {
+            string substring = Description.Substring(0, 60);
+            return substring;
+        }
+
+        public virtual void AddReview(Review rev)
+        {
+            rev.Movie = this;
+            Reviews.Add(rev);
+        }
+        public virtual void DelReview(Review rev)
+        {
+            if (rev.Movie == this)
+            {
+                Reviews.Remove(rev);
+            }
+        }
 
     }
 }

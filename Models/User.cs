@@ -9,7 +9,7 @@ namespace Group4_Lab3.Models
     public class User
     {
         [Required(ErrorMessage = "Email is required")]
-        public string Email { get; set; }
+        public string UserEmail { get; set; }
         public string UserId { get; set; }
         [Required (ErrorMessage = "Password is required")]
         [UIHint("password")]
