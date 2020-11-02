@@ -23,7 +23,7 @@
     </div>
     <div class="text-danger justify-content-center" asp-validation-summary="All"></div>
     <form asp-action="Signin" asp-controller="Account" method="post" class="justify-content-center" style="padding:10px">
-        <input type="hidden" asp-for="ReturnUrl" />
+        @*<input type="hidden" asp-for="ReturnUrl" />*@
         <div class=" col-12 form-group input-div">
             @*<label asp-for="Email">User Email</label>*@
             <div><span asp-validation-for="Email" class="text-danger"></span></div>

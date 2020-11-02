@@ -8,16 +8,13 @@ namespace Group4_Lab3.Models
 {
     public class Review
     {
-        public string UserId { get; set; }
-        public int ReviewID { get; set; }
+        
+        public string ReviewID { get; set; }
         [Required(ErrorMessage = "Please enter Title!")]
         public string Title { get; set; }
         [Required(ErrorMessage = "Please enter Review!")]
         public string ReviewDescription { get; set; }
         public Movie Movie { get; set; }
         public uint Rating { get; set; }
-
-      
-
     }
 }
