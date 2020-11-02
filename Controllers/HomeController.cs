@@ -19,5 +19,9 @@ namespace Charles_Sadia_Lab3.Controllers
         public IActionResult Index() => View();
 
         public IActionResult Upload() => View();
+
+        public IActionResult Review() => View();
+
+        public IActionResult Detail() => View();
     }
 }
