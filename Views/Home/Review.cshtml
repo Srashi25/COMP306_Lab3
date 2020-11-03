@@ -1,0 +1,31 @@
+﻿@{ ViewData["Title"] = "Review";
+    Layout = "_Layout"; }
+
+<section class="jumbotron text-center">
+    <div class="container">
+        <h2>Movie name here</h2>
+    </div>
+</section>
+
+<div class="album py-5 bg-light">
+    <div class="container">
+        <form>
+            <h3>Set your star rating</h3>
+            <br />
+            <h3>Write a review</h3>
+            <div class="form-group">
+                <label for="inputTitle">Title</label>
+                <input type="text" class="form-control" id="inputTitle" />
+            </div>
+            <div class="form-group">
+                <label for="inputReview">Review</label>
+                <input type="text" class="form-control" id="inputDescription" style="height:200px" />
+            </div>
+            <br />
+            <p>
+                <a asp-action="Index" class="btn btn-secondary my-2">Back to movies</a>
+                <a href="#" class="btn btn-primary my-2">Save</a>
+            </p>
+        </form>
+    </div>
+</div>
