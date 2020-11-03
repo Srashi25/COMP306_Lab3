@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Group4_Lab3.Models
 {
-    public interface IReviewRepository
+    public enum Genre
     {
-        IQueryable<Review> Reviews { get; }
-
+        ANIMATION, ACTION, DRAMA, FANTASY, COMEDY, SCIENCE_FICTION, HORROR, ROMANCE, CRIME, ADVENTURE, THRILLER
     }
+  
 }

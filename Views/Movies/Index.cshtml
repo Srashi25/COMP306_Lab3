@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Movie>
+
+@{ 
+    ViewData["Title"] = "Dashboard";
+    Layout = "_Layout"; 
+    }
+
+<main role="main">
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1>Welcome to MovieWeb!</h1>
+            <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+            <p>
+                <a asp-controller="Movies" asp-action="Create" class="btn btn-danger my-2">Upload movie</a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-danger my-2">Log out</a>
+            </p>
+        </div>
+    </section>
+    <div class="col-8 text-center">
+        <form asp-action="Search" asp-controller="Movies" method="post" class="col-12 text-center">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Movie Name" aria-describedby="basic-addon1">
+                <div class="input-group-append">
+                    <button class="btn btn-danger" type="button">Search</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+    <div class="album py-5 bg-light">
+
+        <div class="container">
+
+            <div class="row">
+                @foreach (var m in Model)
+                {
+                    <div class="col-md-4">
+
+                        <div class="card mb-4 shadow-sm">
+                            <img class="card-img-top" src="@m.ImageUrl" alt="@m.MovieName" style="max-width:350px;max-height:200px;">
+                            <div class="card-body">
+                                <span class="card-text">
+                                    @if (m.MovieName == null)
+                                    {
+                                        @: No Name Added
+                                    }
+                                    else
+                                    {
+                                        @m.MovieName
+                                    }
+
+                                </span>
+                                <div style="display: flex; flex-direction: row; justify-content:space-between">
+                                    <span>
+                                    @if (m.Rating == 0)
+                                    {
+                                        @:  No Rating Added
+                                    }
+                                    else
+                                    {
+                                        @m.Rating.ToString("0/5")
+                                    }
+
+                                    </span>
+                                <small class="text-muted">Release Date: @m.ReleaseDate.Year</small>
+                                <small class="text-muted" style="float:right">@m.Genre </small>
+                                </div>
+                                <span class="card-text" style="float:right">
+
+                                <p class="card-text">
+                                    @if (m.Description == null)
+                                    {
+                                        @: No Descriptions Available
+                                    }
+                                    else if (m.Description.Length < 60)
+                                    {
+                                        @m.Description
+                                    }
+
+                                    else
+                                    {
+                                        @m.Substring(m.Description)
+                                    }
+
+                                </p>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <form asp-action="Delete" asp-controller="Movies" method="post">
+                                            <div class="btn-group">
+                                                <a class="btn btn-sm btn-outline-secondary" asp-controller="Movies" asp-action="Details" asp-route-id="@m.MovieId">View</a>
+                                                <a class="btn btn-sm btn-outline-secondary" asp-controller="Movies" asp-action="Edit" asp-route-id="@m.MovieId">Edit</a>
+                                            </div>
+                                            <input type="hidden" name="MovieId" value="@m.MovieId" />
+                                            <button type="submit" style="float:right;margin-left:150px;" class="btn btn-group btn-outline-danger  btn-sm">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</main>

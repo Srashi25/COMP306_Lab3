@@ -8,15 +8,17 @@ namespace Group4_Lab3.Models
 {
     public class User
     {
+
+        public int UserId { get; set; }
+
         [Required(ErrorMessage = "Email is required")]
         public string Email { get; set; }
-        public string UserId { get; set; }
-        [Required (ErrorMessage = "Password is required")]
+
+        [Required(ErrorMessage = "Password is required")]
         [UIHint("password")]
         public string Password { get; set; }
-        [Required(ErrorMessage = "Confirm Password is required")]
+        //[Required(ErrorMessage = "Confirm Password is required")]
         [UIHint("password")]
         public string ConfirmPassword { get; set; }
-        public string ReturnUrl { get; set; } = "/";
     }
 }
