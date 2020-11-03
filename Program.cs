@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Group4_Lab3.Data;
+using Group4_Lab3.DbData;
+using Group4_Lab3.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,19 +21,20 @@ namespace Charles_Sadia_Lab3
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+
                 try
                 {
-                    var context = services.GetRequiredService<MovieDbContext>();
-                    DbInitializer.Initialize(context);
+                    SeedData.Initialize(services);
                 }
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while seeding the database.");
+                    logger.LogError(ex, "An error occurred seeding the DB.");
                 }
             }
 
             host.Run();
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

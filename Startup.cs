@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Group4_Lab3.Data;
+using Group4_Lab3.DbData;
 using Group4_Lab3.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,10 +27,9 @@ namespace Charles_Sadia_Lab3
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            services.AddDbContext<MovieDbContext>(options =>
+            services.AddDbContext<MovieAppDbContext>(options =>
             options.UseSqlServer(
             Configuration["Data:MovieWebApp:ConnectionString"]));
-           // services.AddTransient<IMovieRepository, EFMovieRepository>();
             services.AddMvc();
         }
 
@@ -57,7 +56,7 @@ namespace Charles_Sadia_Lab3
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-          //  SeedData.EnsurePopulated(app);
+         
         }
     }
 }
