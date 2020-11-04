@@ -10,24 +10,25 @@
     <section class="jumbotron text-center">
         <div class="container">
             <h1>Welcome to MovieWeb!</h1>
-            <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+            <p class="lead text-muted">The world's most thorough movie database.  Upload and share your favourite movies!</p>
             <p>
                 <a asp-controller="Movies" asp-action="Create" class="btn btn-danger my-2">Upload movie</a>
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-danger my-2">Log out</a>
             </p>
         </div>
-    </section>
-    <div class="col-8 text-center">
-        <form asp-action="Search" asp-controller="Movies" method="post" class="col-12 text-center">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Movie Name" aria-describedby="basic-addon1">
-                <div class="input-group-append">
-                    <button class="btn btn-danger" type="button">Search</button>
-                </div>
+        <div class="container col-8 justify-content-center">
+            <form asp-action="Search" asp-controller="Movies" method="post" class="col-12 text-center">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Movie Name" aria-describedby="basic-addon1">
+                    <div class="input-group-append">
+                        <button class="btn btn-danger" type="button">Search</button>
+                    </div>
 
-            </div>
-        </form>
-    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    
     <div class="album py-5 bg-light">
 
         <div class="container">
@@ -40,7 +41,7 @@
                         <div class="card mb-4 shadow-sm">
                             <img class="card-img-top" src="@m.ImageUrl" alt="@m.MovieName" style="max-width:350px;max-height:200px;">
                             <div class="card-body">
-                                <span class="card-text">
+                                <h5 class="card-title">
                                     @if (m.MovieName == null)
                                     {
                                         @: No Name Added
@@ -50,9 +51,9 @@
                                         @m.MovieName
                                     }
 
-                                </span>
+                                </h5>
                                 <div style="display: flex; flex-direction: row; justify-content:space-between">
-                                    <span>
+                                    <small class="text-muted">
                                     @if (m.Rating == 0)
                                     {
                                         @:  No Rating Added
@@ -62,11 +63,10 @@
                                         @m.Rating.ToString("0/5")
                                     }
 
-                                    </span>
+                                    </small>
                                 <small class="text-muted">Release Date: @m.ReleaseDate.Year</small>
                                 <small class="text-muted" style="float:right">@m.Genre </small>
                                 </div>
-                                <span class="card-text" style="float:right">
 
                                 <p class="card-text">
                                     @if (m.Description == null)
