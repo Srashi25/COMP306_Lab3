@@ -42,7 +42,7 @@ namespace Group4_Lab3.Controllers
                 return View(userLogin);
 
             }
-            return RedirectToAction("Index", "Movies");
+            return RedirectToAction("Index", "Movies", userLogin);
         }
         [HttpGet]
         // GET: Users/Signup

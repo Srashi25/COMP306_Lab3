@@ -20,8 +20,10 @@ namespace Group4_Lab3.Controllers
         }
 
         // GET: Movies
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(User user)
         {
+         //  var val= _context.Movies.ToListAsync(m => m.UserEmail == user.Email);
+
             return View(await _context.Movies.ToListAsync());
         }
 

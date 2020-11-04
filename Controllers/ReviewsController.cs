@@ -7,7 +7,9 @@ using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
+using Group4_Lab3.DbData;
 using Group4_Lab3.Models;
+using Group4_Lab3.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Group4_Lab3.Controllers
@@ -16,33 +18,55 @@ namespace Group4_Lab3.Controllers
     {
         private static AmazonDynamoDBClient client;
         private static DynamoDBContext _context;
-        private Review newReview;
+
+        private readonly MovieAppDbContext _movieContext;
+        private static Review newReview;
+
+        public ReviewsController(MovieAppDbContext context)
+        {
+            _movieContext = context;
+        }
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
-        public IActionResult AddReview()
+        public IActionResult AddReview(int id)
         {
-            return View();
+            Movie movie = _movieContext.Movies.FirstOrDefault(m => m.MovieId == id);
+            User loggedUser = _movieContext.Users.FirstOrDefault(u => u.Email == movie.UserEmail);
+            if (movie != null)
+            {
+                MovieReview mrm = new MovieReview()
+                {
+                    MovieId = id,
+                    Review = new Review() { UserEmail =  loggedUser.Email}
+                };
+                return View(mrm);
+            }
+            else
+            {
+                //TempData["message"] = $"{LoggedUser.UserName}, you can't add Review to your own recipe!";
+                return RedirectToAction("DataPage");
+            }
         }
 
         [HttpPost]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddReview(Review review)
+        public async Task<IActionResult> AddReview(MovieReview movieReview)
         {
             if (ModelState.IsValid)
             {
 
-                await CreateTable("Review", "ReviewID", review);
+                await CreateTable("Review", "ReviewID", movieReview.Review, movieReview.MovieId);
                 return RedirectToAction("Index", "Movies");
             }
-            return View(review);
+            return View(movieReview);
         }
 
-        private async Task CreateTable(string tabNam, string hashKey, Review review)
+        private async Task CreateTable(string tabNam, string hashKey, Review review, int movId)
         {
             client = new AmazonDynamoDBClient(RegionEndpoint.USEast2);
             var tableResponse = await client.ListTablesAsync();
@@ -82,25 +106,25 @@ namespace Group4_Lab3.Controllers
                         isTableAvailable = tableStatus.Table.TableStatus == "ACTIVE";
                     }
                 });
-                SaveReview(review);
+                SaveReview(review, movId);
 
             }
             else
             {
-                SaveReview(review);
+                SaveReview(review, movId);
             }
         }
 
-        public async void SaveReview(Review review)
+        public async void SaveReview(Review review, int movId)
         {
             //Set a local DB context
             _context = new DynamoDBContext(client);
             newReview = new Review {
                 ReviewDescription = review.ReviewDescription,
                 ReviewID = Guid.NewGuid().ToString(),
-                Movie = review.Movie,
-                MovieId = review.MovieId,
-                Title = review.Title
+                MovieId = movId,
+                Title = review.Title,
+                UserEmail = review.UserEmail
             };
             //Save an review object
             await _context.SaveAsync<Review>(review);
