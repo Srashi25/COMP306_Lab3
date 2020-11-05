@@ -12,11 +12,13 @@ namespace Group4_Lab3.Controllers
     
     public class UsersController : Controller
     {
+        private IAmazonS3 amazonS3;
         private readonly MovieAppDbContext _context;
 
         public UsersController(MovieAppDbContext context)
         {
             _context = context;
+            amazonS3 = new AmazonS3Client(RegionEndpoint.USEast2);
         }
 
         // GET: Users/Signin
@@ -32,13 +34,14 @@ namespace Group4_Lab3.Controllers
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == userLogin.Email);
+            TempData["UserId"] = user.UserId;
             if (user == null)
             {
                 TempData["LoginError"] = $"{userLogin.Email} does not exist";
                 return View(userLogin);
 
             }
-            return RedirectToAction("Index", "Movies", userLogin.Email);
+            return RedirectToAction("Index", "Movies");
         }
         [HttpGet]
         // GET: Users/Signup
@@ -56,10 +59,11 @@ namespace Group4_Lab3.Controllers
             {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Movies");
+                return RedirectToAction("Signin");
             }
             return View(user);
         }
+        
     }
 }
 

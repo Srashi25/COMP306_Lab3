@@ -29,7 +29,6 @@ namespace Group4_Lab3.Controllers
         private DynamoDBContext _dbContext;
         private readonly MovieAppDbContext _context;
         List<Review> reviewList;
-        string email;
         string BUCKET_NAME = "comp306-movieweb-lab3";
 
         public MoviesController(MovieAppDbContext context)
@@ -43,10 +42,8 @@ namespace Group4_Lab3.Controllers
         }
 
         // GET: Movies
-        public async Task<IActionResult> Index(string userEmail)
+        public async Task<IActionResult> Index()
         {
-            email = userEmail;
-            TempData["UserEmail"] = email;
             return View(await _context.Movies.ToListAsync());
         }
 
@@ -64,13 +61,18 @@ namespace Group4_Lab3.Controllers
         // GET: Movies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            int movieId=0;
             if (id == null)
             {
                 return NotFound();
             }
-
+            if(TempData["RevewMovieId"] != null)
+            {
+               movieId = (int)TempData["ReviewMovieId"];
+            }
+           
             var movie = await _context.Movies
-                .FirstOrDefaultAsync(m => m.MovieId == id);
+                .FirstOrDefaultAsync(m => m.MovieId == id ||  m.MovieId == movieId);
 
             if (movie == null)
             {
@@ -80,10 +82,11 @@ namespace Group4_Lab3.Controllers
             return View(movie);
         }
 
+        [HttpGet]
         // GET: Movies/Create
         public IActionResult Create()
         {
-            return View();
+            return View(new Movie());
         }
 
 
@@ -93,6 +96,9 @@ namespace Group4_Lab3.Controllers
         {
             if (ModelState.IsValid)
             {
+                int id = (int)TempData["UserId"];
+                User user = _context.Users.FirstOrDefault(u => u.UserId == id);
+                movie.User = user;
                 _context.Add(movie);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -219,6 +225,7 @@ namespace Group4_Lab3.Controllers
                 movie.Rating = sumRate / calculateAvgRate;
             }
         }
+
 
         [HttpGet]
         public ActionResult AddMovieFile(int id)
