@@ -30,7 +30,9 @@ namespace Charles_Sadia_Lab3
             services.AddDbContext<MovieAppDbContext>(options =>
             options.UseSqlServer(
             Configuration["Data:MovieWebApp:ConnectionString"]));
-            services.AddMvc();
+            services.AddControllersWithViews();
+            services.AddTransient<IMovieRepository, EFMovieRepository>();
+            services.AddTransient<IUserRepository, EFUserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

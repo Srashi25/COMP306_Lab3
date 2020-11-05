@@ -9,15 +9,25 @@
 
 <section class="jumbotron text-center">
     <div class="container">
-        <h2>@Model.MovieName  <span>  <button><img src="~/images/download.png" width="40" style="padding: 5px" /></button></span></h2>
-        <h4><a asp-action="ReviewsList" asp-controller="Reviews">Reviews</a></h4>
-        @*<h5><a asp-action="AddReview" asp-controller="Reviews" asp-route-id="@Model.MovieId">Review Movie</a></h5>*@
-        <form asp-action="AddReview" asp-controller="Reviews" method="post">
-            <input type="hidden" name="MovieId" value="@Model.MovieId" />
-            <h4>
-                <a class="btn btn-outline-secondary" style="float:right" asp-controller="Reviews" asp-action="AddReview" asp-route-id="@Model.MovieId">Add Review</a>
-            </h4>
+        <form asp-controller="Movies" asp-action="DownloadMovie" asp-route-id="@Model.MovieId" method="post">
+            <h2>
+                @Model.MovieName  <span>
+                    <button type="submit" style="border:none;background:none;"><img src="~/images/download.png" width="40" style="padding: 5px" /></button>
+                </span>
+            </h2>
         </form>
+
+        <input type="hidden" name="MovieId" value="@Model.MovieId" />
+        <div style="display:flex;flex-direction:row">
+            <h4>
+                <a class="btn btn-danger" asp-controller="Reviews" asp-action="GetReviews" asp-route-id="@Model.MovieId">Reviews</a>
+            </h4>
+            <h4>
+                <a class="btn btn-outline-danger" asp-controller="Reviews" asp-action="AddReview" asp-route-id="@Model.MovieId">Add Review</a>
+            </h4>
+        </div>
+
+
     </div>
 </section>
 
@@ -47,11 +57,62 @@
                 <label class="form-control" id="showDescription" style="height:200px">@Model.Description</label>
             </div>
         </div>
+        <br />
         <p>
             <div class="text-center">
                 <a asp-action="Index" asp-controller="Movies" class="btn btn-outline-danger my-2">Back to movies</a>
                 <a asp-action="Edit" asp-route-id="@Model.MovieId" class="btn btn-danger">Edit</a>
             </div>
         </p>
+    </div>
+    <div class="row justify-content-center">
+
+        @*<div class="col-9 ">
+            <h3 class="h3 text-center" style="margin-top:20px">Reviews</h3>
+            @if (Model.ReviewsList == null || Model.ReviewsList.Count == 0 )
+            {
+
+                @: <p class="lead text-center"> No Reviews Added</p>
+            }
+            else
+            {
+                @foreach (var review in Model.ReviewsList)
+                {
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title" style="float:right">
+                                Recipe Rating:
+                                @if (Model.ReviewsList.Count() > 0)
+                                {
+                                    @review.MovieRating
+                                }
+                                else
+                                {
+                                    @: Be the first to add Rating!
+                                }
+                            </h6>
+                            <h5 class="card-title">@review.Title</h5>
+                            <small style="float:right" class="card-title">by @review.UserEmail</small>
+                            <h6 class="card-subtitle mb-2 text-muted">@Model.MovieName</h6>
+
+                            <p class="card-text">
+                                @review.ReviewDescription
+                            </p>
+                            <div class="btn-group" style="float:right">
+                                <form asp-action="DelReview" asp-controller="Admin" method="post">
+                                    <a class=" btn btn-sm btn-outline-secondary" asp-controller="Admin" asp-action="EditReview" asp-route-reviewId="@review.ReviewID">Edit</a>
+                                    <input type="hidden" value="@review.ReviewID" name="ReviewID" />
+                                    <input type="hidden" value="@Model.MovieId" name="MovieId" />
+                                    <button class=" btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                }
+            }
+        </div>*@
+
     </div>
 </div>

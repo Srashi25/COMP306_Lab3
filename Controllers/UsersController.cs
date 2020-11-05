@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
+using Amazon;
+using Amazon.S3;
 using Group4_Lab3.DbData;
 using Group4_Lab3.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,7 +38,7 @@ namespace Group4_Lab3.Controllers
                 return View(userLogin);
 
             }
-            return RedirectToAction("Index", "Movies");
+            return RedirectToAction("Index", "Movies", userLogin.Email);
         }
         [HttpGet]
         // GET: Users/Signup
@@ -52,7 +48,6 @@ namespace Group4_Lab3.Controllers
         }
 
         // POST: Users/Create
-       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Signup([Bind("UserId,Email,Password,ConfirmPassword")] User user)
@@ -65,9 +60,6 @@ namespace Group4_Lab3.Controllers
             }
             return View(user);
         }
-
-
-
     }
 }
 
