@@ -1,34 +1,35 @@
 ﻿@model IEnumerable<Movie>
 
-@{ 
+@{
     ViewData["Title"] = "Dashboard";
-    Layout = "_Layout"; 
-    }
+    Layout = "_Layout";
+}
 
 <main role="main">
 
     <section class="jumbotron text-center">
         <div class="container">
             <h1>Welcome to MovieWeb!</h1>
-            <p class="lead text-muted">The world's most thorough movie database.  Upload and share your favourite movies!</p>
+            <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
             <p>
-                <a asp-controller="Movies" asp-action="Create" class="btn btn-danger my-2">Upload movie</a>
+                <a asp-controller="Movies" asp-action="Create" class="btn btn-danger my-2">Add new movie</a>
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-danger my-2">Log out</a>
             </p>
         </div>
-        <div class="container col-8 justify-content-center">
-            <form asp-action="Search" asp-controller="Movies" method="post" class="col-12 text-center">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Movie Name" aria-describedby="basic-addon1">
-                    <div class="input-group-append">
-                        <button class="btn btn-danger" type="button">Search</button>
-                    </div>
-
-                </div>
-            </form>
-        </div>
     </section>
-    
+    <div class="col-8 text-center">
+        <form asp-action="Search" asp-controller="Movies" method="post" class="col-12 text-center">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Movie Name" aria-describedby="basic-addon1">
+                <div class="input-group-append">
+                    <button class="btn btn-danger" type="button">Search</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+    @if (TempData["MovieUploaded"] != null)
+    {<div class="alert alert-success" id="msg">@TempData["MovieUploaded"]</div>}
     <div class="album py-5 bg-light">
 
         <div class="container">
@@ -36,75 +37,106 @@
             <div class="row">
                 @foreach (var m in Model)
                 {
-                    <div class="col-md-4">
+                <div class="col-md-4">
 
-                        <div class="card mb-4 shadow-sm">
-                            <img class="card-img-top" src="@m.ImageUrl" alt="@m.MovieName" style="max-width:350px;max-height:200px;">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    @if (m.MovieName == null)
+                    <div class="card mb-4 shadow-sm">
+                        <img class="card-img-top" src="@m.ImageUrl" alt="@m.MovieName" style="max-width:350px;max-height:200px;">
+                        <div class="card-body">
+                            <span class="card-text">
+                                @if (m.MovieName == null)
                                     {
-                                        @: No Name Added
+                                @: No Name Added
                                     }
                                     else
                                     {
-                                        @m.MovieName
+                                @m.MovieName
                                     }
 
-                                </h5>
-                                <div style="display: flex; flex-direction: row; justify-content:space-between">
-                                    <small class="text-muted">
+                            </span>
+                            <div style="display: flex; flex-direction: row; justify-content:space-between">
+                                <small>
                                     @if (m.Rating == 0)
                                     {
-                                        @:  No Rating Added
+                                    @:  No Rating Added
                                     }
                                     else
                                     {
-                                        @m.Rating.ToString("0/5")
+                                    @m.Rating.ToString("0/5")
                                     }
 
-                                    </small>
+                                </small>
                                 <small class="text-muted">Release Date: @m.ReleaseDate.Year</small>
                                 <small class="text-muted" style="float:right">@m.Genre </small>
-                                </div>
+                            </div>
+                            <span class="card-text">
 
                                 <p class="card-text">
                                     @if (m.Description == null)
                                     {
-                                        @: No Descriptions Available
+                                    @: No Descriptions Available
                                     }
                                     else if (m.Description.Length < 60)
                                     {
-                                        @m.Description
+                                    @m.Description
                                     }
 
                                     else
                                     {
-                                        @m.Substring(m.Description)
+                                    @m.Substring(m.Description)
                                     }
 
                                 </p>
 
+                                </span>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
-                                        <form asp-action="Delete" asp-controller="Movies" method="post">
+                                    <form asp-action="Delete" asp-controller="Movies" method="post" asp-route-id="@m.MovieId">
+                                        <div class="btn-group">
                                             <div class="btn-group">
                                                 <a class="btn btn-sm btn-outline-secondary" asp-controller="Movies" asp-action="Details" asp-route-id="@m.MovieId">View</a>
-                                                <a class="btn btn-sm btn-outline-secondary" asp-controller="Movies" asp-action="Edit" asp-route-id="@m.MovieId">Edit</a>
+                                                <a class="btn btn-sm btn-outline-primary" asp-controller="Movies" asp-action="Edit" asp-route-id="@m.MovieId">Edit</a>
+                                                <a class="btn btn-sm btn-outline-warning" asp-controller="Movies" asp-action="AddMovieFile" asp-route-id="@m.MovieId">Upload</a>
                                             </div>
-                                            <input type="hidden" name="MovieId" value="@m.MovieId" />
-                                            <button type="submit" style="float:right;margin-left:150px;" class="btn btn-group btn-outline-danger  btn-sm">
-                                                Delete
-                                            </button>
-                                        </form>
-                                    </div>
+                                        </div>
+                                        <input type="hidden" name="MovieId" value="@m.MovieId" />
+                                        <button type="submit" style="float:right;margin-left:100px;" class="btn btn-group btn-outline-danger  btn-sm" data-target="#deleteConfirm">
+                                            Delete
+                                        </button>
+                                    </form>
                                 </div>
-                            </div>
+                                @*<div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteConfirmLabel">Delete Confirmation</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                               Are you sure you want to delete @m.MovieName?
+                                            </div>
+                                           
+                                               
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>*@
                         </div>
                     </div>
+                </div>
                 }
             </div>
         </div>
     </div>
 
 </main>
+<script>
+ setTimeout(function () {
+        $('#msg').fadeOut('slow');
+    }, 3000);
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

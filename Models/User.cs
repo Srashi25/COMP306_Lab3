@@ -17,7 +17,7 @@ namespace Group4_Lab3.Models
         [Required(ErrorMessage = "Password is required")]
         [UIHint("password")]
         public string Password { get; set; }
-        //[Required(ErrorMessage = "Confirm Password is required")]
+        [Required(ErrorMessage = "Confirm Password is required")]
         [UIHint("password")]
         public string ConfirmPassword { get; set; }
     }

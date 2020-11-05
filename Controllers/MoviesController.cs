@@ -5,6 +5,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
+using Amazon;
+using Amazon.DynamoDBv2.DocumentModel;
+using Amazon.S3.Util;
+using Amazon.S3.Model;
+using Amazon.S3;
+using System.IO;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using Amazon.S3.Transfer;
 using Group4_Lab3.DbData;
 using Group4_Lab3.Models;
 
@@ -12,18 +23,30 @@ namespace Group4_Lab3.Controllers
 {
     public class MoviesController : Controller
     {
+
+        private AmazonDynamoDBClient client;
+        private IAmazonS3 amazonS3;
+        private DynamoDBContext _dbContext;
         private readonly MovieAppDbContext _context;
+        List<Review> reviewList;
+        string email;
+        string BUCKET_NAME = "comp306-movieweb-lab3";
 
         public MoviesController(MovieAppDbContext context)
         {
             _context = context;
+            client = new AmazonDynamoDBClient(RegionEndpoint.USEast2);
+            _dbContext = new DynamoDBContext(client);
+            amazonS3 = new AmazonS3Client(RegionEndpoint.USEast2);
+            reviewList = new List<Review>();
+
         }
 
         // GET: Movies
-        public async Task<IActionResult> Index(User user)
+        public async Task<IActionResult> Index(string userEmail)
         {
-         //  var val= _context.Movies.ToListAsync(m => m.UserEmail == user.Email);
-
+            email = userEmail;
+            TempData["UserEmail"] = email;
             return View(await _context.Movies.ToListAsync());
         }
 
@@ -45,14 +68,15 @@ namespace Group4_Lab3.Controllers
             {
                 return NotFound();
             }
-            
+
             var movie = await _context.Movies
                 .FirstOrDefaultAsync(m => m.MovieId == id);
+
             if (movie == null)
             {
                 return NotFound();
             }
-
+            await GetReviewsList(movie);
             return View(movie);
         }
 
@@ -65,7 +89,7 @@ namespace Group4_Lab3.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MovieId,Genre,UserId,MovieName,UserEmail,Description,ReleaseDate,ImageUrl")] Movie movie)
+        public async Task<IActionResult> Create(Movie movie)
         {
             if (ModelState.IsValid)
             {
@@ -158,6 +182,127 @@ namespace Group4_Lab3.Controllers
         private bool MovieExists(int id)
         {
             return _context.Movies.Any(e => e.MovieId == id);
+        }
+
+        public async Task GetReviewsList(Movie movie)
+        {
+            string tabName = "Reviews";
+            double calculateAvgRate = 0;
+            int sumRate = 0;
+            var currentTables = await client.ListTablesAsync();
+            if (currentTables.TableNames.Contains(tabName))
+            {
+                IEnumerable<Review> movieReviews;
+                var conditions = new List<ScanCondition> { new ScanCondition("MovieId", ScanOperator.Equal, movie.MovieId) };
+                movieReviews = await _dbContext.ScanAsync<Review>(conditions).GetRemainingAsync();
+
+                Console.WriteLine("List retrieved " + movieReviews);
+                foreach (var result in movieReviews)
+                {
+                    if (result != null)
+                    {
+                        Review review = new Review()
+                        {
+                            ReviewDescription = result.ReviewDescription,
+                            MovieRating = result.MovieRating,
+                            Title = result.Title,
+                            MovieId = result.MovieId,
+                            ReviewID = result.ReviewID,
+                            UserEmail = result.UserEmail,
+                        };
+                        reviewList.Add(review);
+                        sumRate += result.MovieRating;
+                        calculateAvgRate++;
+                    }
+
+                }
+                movie.Rating = sumRate / calculateAvgRate;
+            }
+        }
+
+        [HttpGet]
+        public ActionResult AddMovieFile(int id)
+        {
+
+            return View(id);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddMovieFile(IFormFile postedFile, int id)
+        {
+            Movie movie = _context.Movies.FirstOrDefault(m => m.MovieId == id);
+            var fileTransferUtility = new TransferUtility(amazonS3);
+            string filePath = postedFile.FileName.ToString();
+            try
+            {
+                if (postedFile.Length > 0)
+                {
+                    var tempPath = Path.GetTempFileName();
+
+                    using (var stream = new FileStream(tempPath, FileMode.Create))
+                    {
+                        await postedFile.CopyToAsync(stream);
+                    }
+                    string keyName = postedFile.FileName;
+                    filePath = tempPath;
+                    var fileTransferUtilityRequest = new TransferUtilityUploadRequest
+                    {
+                        BucketName = BUCKET_NAME,
+                        FilePath = filePath,
+                        StorageClass = S3StorageClass.StandardInfrequentAccess,
+                        PartSize = 6291456, // 6 MB.
+                        Key = keyName,
+                        CannedACL = S3CannedACL.PublicRead
+                    };
+                    fileTransferUtilityRequest.Metadata.Add("MovieId", movie.MovieId.ToString());
+                    await fileTransferUtility.UploadAsync(fileTransferUtilityRequest);
+
+                    movie.FilePath = keyName;
+                    _context.Update(movie);
+                    await _context.SaveChangesAsync();
+                    TempData["MovieUploaded"] = $"{movie.MovieName} is successfully uploaded!";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (AmazonS3Exception e)
+            {
+                Console.WriteLine("Error occured. Message:'{0}' ", e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unknown error occured. Message: '{0}'", e.Message);
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DownloadMovie(int id)
+        {
+
+            try
+            {
+                using (amazonS3)
+                {
+                    Movie movie = await _context.Movies.FindAsync(id);
+                    string keyName = movie.FilePath;
+                    GetPreSignedUrlRequest request =
+                              new GetPreSignedUrlRequest()
+                              {
+                                  BucketName = BUCKET_NAME,
+                                  Key = keyName,
+                                  Expires = DateTime.Now.AddMinutes(15)
+                              };
+
+                    string url = amazonS3.GetPreSignedURL(request);
+                    return Redirect(url);
+                }
+            }
+            catch (Exception)
+            {
+                string Failure = "File download failed. Please try after some time.";
+                return View(Failure);
+            }
+
         }
     }
 }
