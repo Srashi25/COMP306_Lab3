@@ -26,10 +26,10 @@
     <div class="text-danger justify-content-center" asp-validation-summary="All"></div>
     <form asp-action="Signin" asp-controller="Users" method="post" class="justify-content-center" style="padding:10px">
         <div class=" col-12 form-group input-div">
-            <input asp-for="Email" class="form-control col-10 input-style" placeholder="e.g. example@email.com" style="border-radius:20px" />
+            <input asp-for="Email" class="form-control col-10 input-style" placeholder="e.g. example@email.com" style="border-radius:20px" required/>
         </div>
         <div class="col-12 form-group input-div">
-            <input asp-for="Password" class="form-control col-10 input-style" placeholder="********" />
+            <input asp-for="Password" class="form-control col-10 input-style" placeholder="********" required/>
         </div>
         <div class="btn-div col-12">
             <button class="col-8 btn btn-danger btn-signin" type="submit">Sign In</button>
