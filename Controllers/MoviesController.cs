@@ -102,6 +102,7 @@ namespace Group4_Lab3.Controllers
                 movie.User = user;
                 _context.Add(movie);
                 await _context.SaveChangesAsync();
+                TempData["Created"] = "Movie added successfull!";
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
@@ -300,34 +301,42 @@ namespace Group4_Lab3.Controllers
         [HttpPost]
         public async Task<IActionResult> DownloadMovie(int id)
         {
-            await ListingObjectsAsync();
-            try
+            Movie movie = await _context.Movies.FindAsync(id);
+                if(movie.FilePath != null)
             {
-                using (amazonS3)
+                try
                 {
-                    Movie movie = await _context.Movies.FindAsync(id);
-                    string keyName = movie.FilePath;
-                    GetPreSignedUrlRequest request =
-                              new GetPreSignedUrlRequest()
-                              {
-                                  BucketName = BUCKET_NAME,
-                                  Key = keyName,
-                                  Expires = DateTime.Now.AddMinutes(15)
-                              };
+                    using (amazonS3)
+                    {
+                        string keyName = movie.FilePath;
+                        GetPreSignedUrlRequest request =
+                                  new GetPreSignedUrlRequest()
+                                  {
+                                      BucketName = BUCKET_NAME,
+                                      Key = keyName,
+                                      Expires = DateTime.Now.AddMinutes(15)
+                                  };
 
-                    string url = amazonS3.GetPreSignedURL(request);
-                    return Redirect(url);
+                        string url = amazonS3.GetPreSignedURL(request);
+                        return Redirect(url);
+                    }
                 }
-            }
-            catch (Exception)
+                catch (Exception)
+                {
+                    string Failure = "File download failed. Please try after some time.";
+                    return View(Failure);
+                }
+            }else
             {
-                string Failure = "File download failed. Please try after some time.";
-                return View(Failure);
+                TempData["NoFile"]="No file exist to download";
+                return RedirectToAction("Index");
             }
+           
+           
 
         }
 
-       public  async Task ListingObjectsAsync()
+       public  async Task ListingObjectsAsync(string filePath)
         {
             try
             {
@@ -344,6 +353,10 @@ namespace Group4_Lab3.Controllers
                     // Process the response.
                     foreach (S3Object entry in response.S3Objects)
                     {
+                        if(entry.Key == filePath)
+                        {
+
+                        }
                         Console.WriteLine("key = {0} size = {1}",
                             entry.Key, entry.Size);
                     }

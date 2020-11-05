@@ -17,13 +17,17 @@
             </p>
         </div>
     </section>
-    <div id="alert" style="display:flex;justify-content:center">
+    <div class="col-md-6" id="alert" style="display:flex;justify-content:center; height:80px;">
         @if (TempData["MovieUploaded"] != null)
-        {<div class=" col-md-4 alert-success alert-style" id="msg">@TempData["MovieUploaded"]</div>}
+        {<div class=" col-md-12 alert-success " id="msg">@TempData["MovieUploaded"]</div>}
         @if (TempData["Updated"] != null)
-        {<div class=" col-md-4 alert-success alert-style" id="msg">@TempData["Updated"]</div>}
+        {<div class=" col-md-12 alert-success " id="msg">@TempData["Updated"]</div>}
+        @if (TempData["NoFile"] != null)
+        {<div class=" col-md-12 alert-danger " id="msg">@TempData["NoFile"]</div>}
+        @if (TempData["Created"] != null)
+        {<div class=" col-md-12 alert-danger " id="msg">@TempData["Created"]</div>}
     </div>
-   
+
     <div class="album py-5 bg-light">
 
         <div class="container">
