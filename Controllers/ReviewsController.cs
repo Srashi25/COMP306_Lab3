@@ -49,7 +49,7 @@ namespace Group4_Lab3.Controllers
                 MovieReview mrm = new MovieReview()
                 {
                     MovieId = id,
-                    Review = new Review()
+                    Review = new Review() 
                 };
                 TempData["movieName"] = $"{movie.MovieName}";
                 return View(mrm);
@@ -69,7 +69,7 @@ namespace Group4_Lab3.Controllers
                 movieReview.Review.MovieId = movieReview.MovieId;
                 TempData["ReviewMovieId"] = movieReview.MovieId;
                 await CreateTable("Reviews", "ReviewID", movieReview.Review);
-                return RedirectToAction("Details","Movies", movieReview.MovieId);
+                return RedirectToAction("ReviewsList");
             }
             return View(movieReview);
         }
@@ -126,6 +126,7 @@ namespace Group4_Lab3.Controllers
         public async Task SaveReview(Review review)
         {
             Movie movie = repository.Movies.FirstOrDefault(m => m.MovieId == review.MovieId);
+            string email = TempData["UserEmail"].ToString();
             newReview = new Review
             {
                 ReviewDescription = review.ReviewDescription,
@@ -133,7 +134,7 @@ namespace Group4_Lab3.Controllers
                 MovieId = review.MovieId,
                 Movie = movie,
                 Title = review.Title,
-                UserEmail = review.UserEmail,
+                UserEmail = email,
                 MovieRating = review.MovieRating
 
             };

@@ -35,6 +35,7 @@ namespace Group4_Lab3.Controllers
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == userLogin.Email);
             TempData["UserId"] = user.UserId;
+            TempData["UserEmail"] = user.Email;
             if (user == null)
             {
                 TempData["LoginError"] = $"{userLogin.Email} does not exist";
