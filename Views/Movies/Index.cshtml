@@ -10,7 +10,7 @@
     <section class="jumbotron text-center">
         <div class="container">
             <h1>Welcome to MovieWeb!</h1>
-            <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+            <p class="lead text-muted">The world's most thorough movie database.  Upload and share your favourite movies!</p>
             <p>
                 <a asp-controller="Movies" asp-action="Create" class="btn btn-danger my-2" >Add new movie</a>
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-danger my-2">Log out</a>
@@ -33,7 +33,7 @@
                     <div class="card mb-4 shadow-sm">
                         <img class="card-img-top" src="@m.ImageUrl" alt="@m.MovieName" style="max-width:350px;max-height:200px;">
                         <div class="card-body">
-                            <span class="card-text">
+                            <h5 class="card-title">
                                 @if (m.MovieName == null)
                                     {
                                 @: No Name Added
@@ -43,9 +43,9 @@
                                 @m.MovieName
                                     }
 
-                            </span>
+                            </h5>
                             <div style="display: flex; flex-direction: row; justify-content:space-between">
-                                <small>
+                                <small class="text-muted">
                                     @if (m.Rating == 0)
                                     {
                                     @:  No Rating Added
@@ -76,6 +76,7 @@
                                     }
                                 </p>
                                 </span>
+                            <br />
                                 <div class="d-flex justify-content-between align-items-center">
                                     <form asp-action="Delete" asp-controller="Movies" method="post" asp-route-id="@m.MovieId">
                                         <div class="btn-group">
@@ -84,11 +85,11 @@
                                                 <a class="btn btn-sm btn-outline-primary" asp-controller="Movies" asp-action="Edit" asp-route-id="@m.MovieId">Edit</a>
                                                 <a class="btn btn-sm btn-outline-warning" asp-controller="Movies" asp-action="AddMovieFile" asp-route-id="@m.MovieId">Upload</a>
                                             </div>
+                                            <input type="hidden" name="MovieId" value="@m.MovieId" />
+                                            <button type="submit" style="float:right;margin-left:100px;" class="btn btn-group btn-outline-danger  btn-sm" data-target="#deleteConfirm">
+                                                Delete
+                                            </button>
                                         </div>
-                                        <input type="hidden" name="MovieId" value="@m.MovieId" />
-                                        <button type="submit" style="float:right;margin-left:100px;" class="btn btn-group btn-outline-danger  btn-sm" data-target="#deleteConfirm">
-                                            Delete
-                                        </button>
                                     </form>
                                 </div>
                                 @*<div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
