@@ -1,53 +1,4 @@
-﻿@*@model Movie
-
-@{
-    ViewData["Title"] = "Edit";
-    Layout = "_Layout";
-}
-
-<h1 class="text-center">Edit</h1>
-
-<h4 class="text-center">@Model.MovieName</h4>
-<hr />
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <form asp-action="Edit" asp-controller="Movies">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MovieId" />
-            <div class="form-group row">
-                <label asp-for="Genre" class="col-sm-2 col-form-label">Genre</label>
-                <div class="col-sm-10">
-                    <select asp-for="Genre" asp-items="Html.GetEnumSelectList<Genre>()" class="col-12 select">
-                        <option value="">Choose a Genre</option>
-                    </select>
-                    <span asp-validation-for="Genre" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label asp-for="ReleaseDate" class="control-label"></label>
-                <input asp-for="ReleaseDate" class="form-control" />
-                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
-            </div>
-            <div class="form-group row">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
-            <div class="form-group row">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <a asp-action="Index" asp-controller="Movies" class="btn btn-outline-danger my-2">Back to movies</a>
-                <input type="submit" value="Save" class="btn btn-danger" />
-            </div>
-        </form>
-    </div>
-</div>*@
-
-
+﻿
 
 
 @model Movie
@@ -72,15 +23,20 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="MovieId" />
             <div class="form-group row">
+                <label asp-for="MovieName" class="control-label"></label>
+                <input asp-for="MovieName" class="form-control" />
+                <span asp-validation-for="MovieName" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
                 <label asp-for="Genre" class="control-label">Genre</label><br /><br />
-                    <select asp-for="Genre" asp-items="Html.GetEnumSelectList<Genre>()" class="form-control">
-                        <option value="">Choose a Genre</option>
-                    </select>
-                    <span asp-validation-for="Genre" class="text-danger"></span>
+                <select asp-for="Genre" asp-items="Html.GetEnumSelectList<Genre>()" class="form-control">
+                    <option value="">Choose a Genre</option>
+                </select>
+                <span asp-validation-for="Genre" class="text-danger"></span>
             </div>
             <div class="form-group row">
                 <label asp-for="ReleaseDate" class="control-label"></label>
-                <input asp-for="ReleaseDate" class="form-control" />
+                <input asp-for="ReleaseDate" class="form-control" type="date"/>
                 <span asp-validation-for="ReleaseDate" class="text-danger"></span>
             </div>
             <div class="form-group row">

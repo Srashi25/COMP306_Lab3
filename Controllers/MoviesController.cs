@@ -30,6 +30,7 @@ namespace Group4_Lab3.Controllers
         private readonly MovieAppDbContext _context;
         List<Review> reviewList;
         string BUCKET_NAME = "comp306-movieweb-lab3";
+        Movie updateMovie;
 
         public MoviesController(MovieAppDbContext context)
         {
@@ -128,6 +129,7 @@ namespace Group4_Lab3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Movie movie)
         {
+            
             if (id != movie.MovieId)
             {
                 return NotFound();
@@ -137,7 +139,19 @@ namespace Group4_Lab3.Controllers
             {
                 try
                 {
-                    _context.Update(movie);
+                    updateMovie = new Movie
+                    {
+                        MovieId= movie.MovieId,
+                        MovieName=movie.MovieName,
+                        Description= movie.Description,
+                        FilePath=movie.FilePath,
+                        Genre=movie.Genre,
+                        ImageUrl=movie.ImageUrl,
+                        Rating=movie.Rating,
+                        ReleaseDate=movie.ReleaseDate,
+                        User=movie.User
+                    };
+                    _context.Update(updateMovie);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -151,7 +165,8 @@ namespace Group4_Lab3.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index", movie);
+                TempData["Updated"] = "Movie is updated successfully!";
+                return RedirectToAction("Index");
             }
             return View(movie);
         }
@@ -285,7 +300,7 @@ namespace Group4_Lab3.Controllers
         [HttpPost]
         public async Task<IActionResult> DownloadMovie(int id)
         {
-
+            await ListingObjectsAsync();
             try
             {
                 using (amazonS3)
@@ -311,5 +326,43 @@ namespace Group4_Lab3.Controllers
             }
 
         }
+
+       public  async Task ListingObjectsAsync()
+        {
+            try
+            {
+                ListObjectsV2Request request = new ListObjectsV2Request
+                {
+                    BucketName = BUCKET_NAME,
+                    MaxKeys = 10
+                };
+                ListObjectsV2Response response;
+                do
+                {
+                    response = await amazonS3.ListObjectsV2Async(request);
+
+                    // Process the response.
+                    foreach (S3Object entry in response.S3Objects)
+                    {
+                        Console.WriteLine("key = {0} size = {1}",
+                            entry.Key, entry.Size);
+                    }
+                    Console.WriteLine("Next Continuation Token: {0}", response.NextContinuationToken);
+                    request.ContinuationToken = response.NextContinuationToken;
+                } while (response.IsTruncated);
+            }
+            catch (AmazonS3Exception amazonS3Exception)
+            {
+                Console.WriteLine("S3 error occurred. Exception: " + amazonS3Exception.ToString());
+                Console.ReadKey();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: " + e.ToString());
+                Console.ReadKey();
+            }
+        }
+
+      
     }
 }
