@@ -22,15 +22,20 @@ namespace Charles_Sadia_Lab3
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-            services.AddDbContext<MovieAppDbContext>(options =>
-            options.UseSqlServer(
-            Configuration["Data:MovieWebApp:ConnectionString"]));
+            //services.Configure<CookieTempDataProviderOptions>(options =>
+            //{
+            //    options.Cookie.IsEssential = true;
+            //});
+
+                 services.Configure<CookiePolicyOptions>(options =>
+                 {
+                     options.CheckConsentNeeded = context => true;
+                     options.MinimumSameSitePolicy = SameSiteMode.None;
+                     options.ConsentCookie.IsEssential = true;
+                 });
             services.AddControllersWithViews();
+            services.AddDbContext<MovieAppDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("MovieWebApp")));
             services.AddTransient<IMovieRepository, EFMovieRepository>();
             services.AddTransient<IUserRepository, EFUserRepository>();
         }

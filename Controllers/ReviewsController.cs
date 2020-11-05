@@ -67,8 +67,9 @@ namespace Group4_Lab3.Controllers
             if (ModelState.IsValid)
             {
                 movieReview.Review.MovieId = movieReview.MovieId;
+                TempData["ReviewMovieId"] = movieReview.MovieId;
                 await CreateTable("Reviews", "ReviewID", movieReview.Review);
-                return RedirectToAction("Details", "Movies", movieReview.MovieId);
+                return RedirectToAction("Details","Movies", movieReview.MovieId);
             }
             return View(movieReview);
         }
@@ -148,38 +149,43 @@ namespace Group4_Lab3.Controllers
         }
         public async Task GetReviewsList(int movieId)
         {
-            string tabName = "Reviews";
-            double calculateAvgRate = 0;
-            int sumRate = 0;
-            var currentTables = await client.ListTablesAsync();
-            if (currentTables.TableNames.Contains(tabName))
+            if (movieId != 0)
             {
-                IEnumerable<Review> movieReviews;
-                var conditions = new List<ScanCondition> { new ScanCondition("MovieId", ScanOperator.Equal, movieId) };
-                movieReviews = await _context.ScanAsync<Review>(conditions).GetRemainingAsync();
-                Movie movie = repository.Movies.FirstOrDefault(m => m.MovieId == movieId);
-                Console.WriteLine("List retrieved " + movieReviews);
-                foreach (var result in movieReviews)
+                string tabName = "Reviews";
+                double calculateAvgRate = 0;
+                int sumRate = 0;
+                var currentTables = await client.ListTablesAsync();
+                if (currentTables.TableNames.Contains(tabName))
                 {
-                    if (result != null)
+                    IEnumerable<Review> movieReviews;
+                    var conditions = new List<ScanCondition> { new ScanCondition("MovieId", ScanOperator.Equal, movieId) };
+                    movieReviews = await _context.ScanAsync<Review>(conditions).GetRemainingAsync();
+                    Movie movie = repository.Movies.FirstOrDefault(m => m.MovieId == movieId);
+                    Console.WriteLine("List retrieved " + movieReviews);
+                    foreach (var result in movieReviews)
                     {
-                        Review review = new Review()
+                        if (result != null)
                         {
-                            ReviewDescription = result.ReviewDescription,
-                            MovieRating = result.MovieRating,
-                            Title = result.Title,
-                            MovieId = result.MovieId,
-                            ReviewID = result.ReviewID,
-                            UserEmail = result.UserEmail,
-                        };
-                        reviewList.Add(review);
-                        sumRate += result.MovieRating;
-                        calculateAvgRate++;
-                    }
+                            Review review = new Review()
+                            {
+                                ReviewDescription = result.ReviewDescription,
+                                MovieRating = result.MovieRating,
+                                Title = result.Title,
+                                MovieId = result.MovieId,
+                                ReviewID = result.ReviewID,
+                                UserEmail = result.UserEmail,
+                            };
+                            reviewList.Add(review);
+                            sumRate += result.MovieRating;
+                            calculateAvgRate++;
+                        }
 
+                    }
+                    movie.Rating = sumRate / calculateAvgRate;
                 }
-                movie.Rating = sumRate / calculateAvgRate;
+
             }
+
         }
     }
 }
