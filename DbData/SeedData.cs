@@ -42,7 +42,7 @@ namespace Group4_Lab3.DbData
                         Genre = Genre.HORROR,
                         Rating = 4,
                         Description = "This is really scary kids movie",
-                        ImageUrl = "~/images/The_SpongeBob_Movie_Sponge_on_the_Run.jpg"
+                        ImageUrl = "https://upload.wikimedia.org/wikipedia/en/2/2f/Ghostbusters_%281984%29_theatrical_poster.png"
                     },
 
                     new Movie
@@ -52,7 +52,7 @@ namespace Group4_Lab3.DbData
                         Genre = Genre.HORROR,
                         Rating = 3,
                         Description = "This is a horror movie",
-                        ImageUrl = "~/images/sonic.jpg"
+                        ImageUrl = "https://upload.wikimedia.org/wikipedia/en/0/01/Ghostbusters_ii_poster.jpg"
                     },
 
                     new Movie
@@ -62,7 +62,7 @@ namespace Group4_Lab3.DbData
                         Genre = Genre.THRILLER,
                         Rating = 4,
                         Description = "This is athriller movie",
-                        ImageUrl = "~/images/sonic.jpg"
+                        ImageUrl = "https://images-na.ssl-images-amazon.com/images/I/51I9qHhm1AL._AC_.jpg"
                     }
                 ); ;
                 context.SaveChanges();

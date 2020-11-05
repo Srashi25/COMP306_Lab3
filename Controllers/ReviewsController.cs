@@ -33,8 +33,9 @@ namespace Group4_Lab3.Controllers
         }
 
 
-        public IActionResult ReviewsList()
+        public async Task<IActionResult> ReviewsList(int movieId)
         {
+            await GetReviewsList(movieId);
             return View(reviewList);
         }
 
@@ -69,7 +70,7 @@ namespace Group4_Lab3.Controllers
                 movieReview.Review.MovieId = movieReview.MovieId;
                 TempData["ReviewMovieId"] = movieReview.MovieId;
                 await CreateTable("Reviews", "ReviewID", movieReview.Review);
-                return RedirectToAction("ReviewsList");
+                return RedirectToAction("ReviewsList", movieReview.MovieId);
             }
             return View(movieReview);
         }

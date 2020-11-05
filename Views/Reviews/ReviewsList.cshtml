@@ -4,46 +4,13 @@
     ViewData["Title"] = "ReviewsList";
 }
 
-<h1>ReviewsList</h1>
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReviewDescription)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReviewDescription)
-                </td>
-                @*<td>
-                        <a asp-action="Edit" asp-route-id="@item.ReviewID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.ReviewID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.ReviewID">Delete</a>
-                    </td>*@
-            </tr>
-        }
-    </tbody>
-</table>
-
-
 <div class="row justify-content-center">
 
     <div class="col-9 ">
-            <h3 class="h3 text-center" style="margin-top:20px">Reviews</h3>
+        <h3 class="h3 text-center" style="margin-top:20px">
+            @if (TempData["MovieName"] != null)
+            {<span class="alert alert-danger" id="error">@TempData["MovieName"]</span>} Reviews
+        </h3>
             @if (Model == null || Model.ToList().Count == 0 )
             {
 
@@ -68,20 +35,10 @@
                             </h6>
                             <h5 class="card-title">@review.Title</h5>
                             <small style="float:right" class="card-title">by @review.UserEmail</small>
-                            @*<h6 class="card-subtitle mb-2 text-muted">@review.Movie.MovieName</h6>*@
-
                             <p class="card-text">
                                 @review.ReviewDescription
                             </p>
-                            @*<div class="btn-group" style="float:right">
-                                <form asp-action="DelReview" asp-controller="Admin" method="post">
-                                    <a class=" btn btn-sm btn-outline-secondary" asp-controller="Admin" asp-action="EditReview" asp-route-reviewId="@review.ReviewID">Edit</a>
-                                    <input type="hidden" value="@review.ReviewID" name="ReviewID" />
-                                    <input type="hidden" value="@Model.MovieId" name="MovieId" />
-                                    <button class=" btn btn-sm btn-outline-danger" type="submit">Delete</button>
-                                </form>
-
-                            </div>*@
+    
                         </div>
                     </div>
                     <hr>
