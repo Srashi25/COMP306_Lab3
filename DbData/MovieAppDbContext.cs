@@ -22,7 +22,7 @@ namespace Group4_Lab3.DbData
             {
                 return;
             }
-            optionsBuilder.UseSqlServer($"Server=moviesdblab3.cpgfkgne7e1e.us-east-2.rds.amazonaws.com;Database=moviewebdb; User Id= admin; Password: password");
+            optionsBuilder.UseSqlServer($"Server=<your data string>;Database=moviewebdb; User Id= <your user name>; Password: <your password>");
             base.OnConfiguring(optionsBuilder);
         }
 
